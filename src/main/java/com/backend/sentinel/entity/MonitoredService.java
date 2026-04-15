@@ -18,7 +18,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "monitored_services")
-public class MonitorService {
+public class MonitoredService {
+    @jakarta.persistence.Id
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
