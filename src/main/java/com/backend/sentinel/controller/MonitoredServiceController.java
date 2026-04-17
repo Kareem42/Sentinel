@@ -19,7 +19,7 @@ public class MonitoredServiceController {
     public MonitoredServiceController(MonitoredServiceService monitoredService) {
         this.monitoredService = monitoredService;
     }
-    @PostMapping("/service")
+    @PostMapping
     public ResponseEntity<ServiceResponse> createService(@Valid @RequestBody ServiceRequest request) {
         var data = monitoredService.saveService(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(data);

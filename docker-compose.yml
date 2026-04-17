@@ -1,11 +1,31 @@
 version: '3.8'
 services:
-  db:
+  sentinel-db:
     image: postgres:15
     container_name: sentinel-db
     environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=sentinel_db
+      POSTGRES_DB: sentinel_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
     ports:
-      - "5432:5432"
+      - "5432:5432" # Keep 5433 for your local PGAdmin/DBeaver access
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  sentinel-api:
+    build: .
+    container_name: sentinel-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      sentinel-db:
+        condition: service_healthy
+    environment:
+      # CRITICAL: Use the service name 'sentinel-db', not 'localhost'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://sentinel-db:5432/sentinel_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
