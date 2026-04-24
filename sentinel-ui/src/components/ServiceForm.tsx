@@ -9,7 +9,7 @@ export const ServiceForm = () => {
         e.preventDefault();
         try{
             // This hits the Dockerized Spring Boot API
-            await axios.post('https://localhost:8080/api/v1/service', formData);
+            await axios.post('http://localhost:8080/api/v1/service', formData);
             setStatus('Success! Service registered.');
             setFormData({name: '', url: ''});
         } catch (error: any) {

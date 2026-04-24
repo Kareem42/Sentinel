@@ -5,7 +5,7 @@ import {ServiceForm} from "./components/ServiceForm.tsx";
 
 function App() {
   useEffect(() => {
-    axios.get("http://localhost:8000/api/v1/service")
+    axios.get("http://localhost:5173/api/v1/service")
     .then(res => console.log("Connection Successful:", res.data))
     .catch(err => console.log("Connection Failed:", err));
   }, []);
