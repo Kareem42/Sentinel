@@ -3,7 +3,6 @@ package com.backend.sentinel.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
@@ -15,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "monitored_services")
-public class MonitoredService {
+public class MonitoredServiceEntity {
     @jakarta.persistence.Id
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

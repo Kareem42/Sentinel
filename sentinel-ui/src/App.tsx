@@ -1,20 +1,21 @@
-import { useEffect } from "react";
-import axios from 'axios';
+
 import './App.css'
 import {ServiceForm} from "./components/ServiceForm.tsx";
+import {ServiceList} from "./components/ServiceList.tsx";
+import {useServices} from "./hooks/useServices.ts";
+import {Toaster } from 'react-hot-toast';
 
 function App() {
-  useEffect(() => {
-    axios.get("http://localhost:5173/api/v1/service")
-    .then(res => console.log("Connection Successful:", res.data))
-    .catch(err => console.log("Connection Failed:", err));
-  }, []);
-  return (
-      <div>
-        <h1>Sentinel Dashboard</h1>
-          <ServiceForm/>
-      </div>
-  )
+    const {services, isLoading, refresh} = useServices();
+    return (
+        <div style={{padding: "20px"}}>
+            <Toaster position="top-right"/>
+            <h1>Sentinel Dashboard</h1>
+            <ServiceForm onServiceAdded={refresh}/>
+            <hr/>
+            {isLoading ? <p>Loading services...</p> : <ServiceList services={services}/>}
+        </div>
+    )
 }
 
 export default App

@@ -6,7 +6,7 @@
 - **Database:** PostgreSQL - Relational storage for users and metrics.
 - **DevOps:** Docker (Containerization) & AWS (Cloud Hosting).
 
-## 2. Key Architectural Decisions (Interview Talking Points)
+## 2. Key Architectural Decisions
 - **Stateless Authentication:** We use JWT (JSON Web Tokens) so the backend can scale horizontally without sharing session state.
 - **Type Safety:** Using TypeScript on the front and Java on the back ensures a "contract" between data structures, reducing runtime errors.
 - **Containerization:** Using Docker ensures "it works on my machine" translates perfectly to "it works in production."

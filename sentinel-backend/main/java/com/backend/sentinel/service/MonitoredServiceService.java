@@ -2,32 +2,43 @@ package com.backend.sentinel.service;
 
 import com.backend.sentinel.dto.ServiceRequest;
 import com.backend.sentinel.dto.ServiceResponse;
-import com.backend.sentinel.entity.MonitoredService;
+import com.backend.sentinel.entity.MonitoredServiceEntity;
 import com.backend.sentinel.repository.MonitoredServiceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
 public class MonitoredServiceService {
-    private final MonitoredServiceRepository monitoredServiceRepository;
+    private final MonitoredServiceRepository repository;
 
     @Transactional
     public ServiceResponse saveService(ServiceRequest request) {
-       // Map Request DTO -> Entity
-        MonitoredService serviceEntity = new MonitoredService();
-       // Setting the name and url from the request
+        MonitoredServiceEntity serviceEntity = new MonitoredServiceEntity();
         serviceEntity.setName(request.name());
         serviceEntity.setUrl(request.url());
         serviceEntity.setStatus("PENDING");
 
-        MonitoredService savedEntity = monitoredServiceRepository.save(serviceEntity);
+        MonitoredServiceEntity savedEntity = repository.save(serviceEntity);
        return new ServiceResponse(
                savedEntity.getId(),
                savedEntity.getName(),
                savedEntity.getUrl(),
                savedEntity.getStatus());
+   }
+
+   public List<ServiceResponse> findAll(){
+        return repository.findAll().stream()
+                .map(monitoredServiceEntity -> new ServiceResponse(
+                        monitoredServiceEntity.getId(),
+                        monitoredServiceEntity.getName(),
+                        monitoredServiceEntity.getUrl(),
+                        monitoredServiceEntity.getStatus()
+                ))
+                .toList();
    }
 }
