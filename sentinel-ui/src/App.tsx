@@ -3,7 +3,7 @@ import './App.css'
 import {ServiceForm} from "./components/ServiceForm.tsx";
 import {ServiceList} from "./components/ServiceList.tsx";
 import {useServices} from "./hooks/useServices.ts";
-import {Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
     const {services, isLoading, refresh} = useServices();

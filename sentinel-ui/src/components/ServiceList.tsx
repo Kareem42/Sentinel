@@ -1,23 +1,10 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import type {MonitoredService} from "../types.ts";
+import type { MonitoredService } from "../types.ts";
 
-export const ServiceList = () => {
-    const [services, setServices] = useState<MonitoredService[]>([]);
+interface Props {
+    services: MonitoredService[];
+}
 
-    const fetchServices = async () => {
-        try{
-            const response = await axios.get('http://localhost:8000/api/services');
-            setServices(response.data);
-        } catch (error) {
-            console.log("Failed to fetch services: ", error);
-        }
-    };
-
-    useEffect(() => {
-        fetchServices();
-    }, []);
-
+export const ServiceList = ({ services }: Props) => {
     return (
         <div style={{ marginTop: "10px" }}>
             <h2>Monitored Services</h2>
@@ -30,11 +17,13 @@ export const ServiceList = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {services.map((service, index) => (
-                    <tr key={index}>
-                        <td>{service.name}</td>
-                        <td>{service.url}</td>
-                        <td>Online</td>
+                {services.map((s) => (
+                    <tr key={s.id}>
+                        <td style={{padding: '10px'}}>{s.name}</td>
+                        <td style={{padding: '10px'}}>{s.url}</td>
+                        <td style={{padding: '10px'}}>
+                            <span style={{color: 'green'}}>● Online</span>
+                        </td>
                     </tr>
                 ))}
                 </tbody>
