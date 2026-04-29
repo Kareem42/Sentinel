@@ -22,9 +22,15 @@ export const ServiceForm  = ({onServiceAdded}: Props) => {
             setFormData({name: '', url: ''});
             onServiceAdded();
         } catch (error: any) {
-            // This will catch the 400 error from the JUnit test
-            const errorMsg = error.response?.data?.url || 'Error registering service';
-            toast.error(errorMsg, {id: loadingToast});
+            const apiError = error.response?.data;
+
+            if (apiError?.errors) {
+                Object.values(apiError.errors).forEach((error: any) => {
+                    toast.error(error.message);
+                })
+            } else {
+                toast.error("An unexpected error has occurred.");
+            }
         } finally {
             setIsSubmitting(false);
         }
