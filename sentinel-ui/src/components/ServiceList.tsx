@@ -1,7 +1,7 @@
-import type { MonitoredService } from "../types.ts";
+import type { MonitoredServiceResponse } from "../types.ts";
 
 interface Props {
-    services: MonitoredService[];
+    services: MonitoredServiceResponse[];
 }
 
 export const ServiceList = ({ services }: Props) => {
