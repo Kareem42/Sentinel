@@ -21,7 +21,13 @@ export const useServices = () => {
     }, []);
 
     useEffect(() => {
-        fetchServices();
+        fetchServices(); // Initial fetch
+
+        const interval = setInterval(() => {
+            fetchServices();
+        }, 30000); // Poll every 30 seconds
+
+        return () => clearInterval(interval); // Cleanup on unmount
     }, [fetchServices]);
 
     return {services, isLoading, error, refresh: fetchServices};

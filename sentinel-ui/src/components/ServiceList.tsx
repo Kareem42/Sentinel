@@ -22,7 +22,7 @@ export const ServiceList = ({ services }: Props) => {
                         <td style={{padding: '10px'}}>{s.name}</td>
                         <td style={{padding: '10px'}}>{s.url}</td>
                         <td style={{padding: '10px'}}>
-                            <span style={{color: 'green'}}>● Online</span>
+                            <span style={{color: s.status === 'UP' ? '#4caf50' : '#f44336', fontWeight: "bold"}}>● {s.status}</span>
                         </td>
                     </tr>
                 ))}

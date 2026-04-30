@@ -26,7 +26,8 @@ public class MonitoredServiceEntity {
     @Column(nullable = false)
     private String url;
 
-    private String status; // "UP" , "DOWN"
+    private String status = "UNKNOWN"; // "UP" , "DOWN"
+    private LocalDateTime lastChecked;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
