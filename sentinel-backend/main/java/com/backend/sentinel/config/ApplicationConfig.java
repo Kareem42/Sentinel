@@ -1,6 +1,7 @@
 package com.backend.sentinel.config;
 
 import com.backend.sentinel.repository.UserRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

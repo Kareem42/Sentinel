@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
-import axios from "axios";
 import type { MonitoredServiceResponse } from "../types.ts";
+import api from '../api/axiosConfig'
 
 export const useServices = () => {
     const [services, setServices] = useState<MonitoredServiceResponse[]>([]);
@@ -11,7 +11,7 @@ export const useServices = () => {
         setIsLoading(true);
         setError(null);
         try{
-            const response = await axios('http://localhost:8080/api/v1/service');
+            const response = await api.get('/services');
             setServices(response.data);
         } catch(err: any){
             setError(err.message || "Failed to fetch services.");

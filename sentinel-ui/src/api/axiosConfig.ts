@@ -1,0 +1,38 @@
+import axios from 'axios';
+
+const api = axios.create({
+    baseURL: "http://localhost:8080/api/v1"
+});
+
+/*
+* Instead of the manually adding the token to every axios call, use an interceptor.
+* It automatically injects the token if it does exist.
+*/
+api.interceptors.response.use(
+    (config) => {
+        const token = localStorage.getItem('sentinel_token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+/*
+* Using a response interceptor to handle expired tokens
+*/
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401 || error.response?.status === 403) {
+            localStorage.removeItem('sentinel_token');
+            window.location.href = '/login';
+        }
+        return Promise.reject(error);
+    }
+);
+
+export default api;
