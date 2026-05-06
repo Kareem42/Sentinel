@@ -12,7 +12,7 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    private static final String SECRET_KEY = "your-very-secure-and-very-long-secret-password";
+    private static final String SECRET_KEY = "YourLongSecureSecretKeyThatIsAtLeast32CharactersLongForHS256!!";
 
     public String generateToken(String username){
         return Jwts.builder()
