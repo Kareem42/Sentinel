@@ -4,10 +4,6 @@ const api = axios.create({
     baseURL: "http://localhost:8080/api/v1"
 });
 
-/*
-* Instead of the manually adding the token to every axios call, use an interceptor.
-* It automatically injects the token if it does exist.
-*/
 api.interceptors.response.use(
     (config) => {
         const token = localStorage.getItem('sentinel_token');
@@ -21,9 +17,6 @@ api.interceptors.response.use(
     }
 );
 
-/*
-* Using a response interceptor to handle expired tokens
-*/
 api.interceptors.response.use(
     (response) => response,
     (error) => {
