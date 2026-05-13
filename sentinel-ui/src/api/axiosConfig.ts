@@ -4,7 +4,7 @@ const api = axios.create({
     baseURL: "http://localhost:8080/api/v1"
 });
 
-api.interceptors.response.use(
+api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('sentinel_token');
         if (token) {
@@ -22,7 +22,7 @@ api.interceptors.response.use(
     (error) => {
         if (error.response?.status === 401 || error.response?.status === 403) {
             localStorage.removeItem('sentinel_token');
-            window.location.href = '/login';
+
         }
         return Promise.reject(error);
     }

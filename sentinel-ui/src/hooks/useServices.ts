@@ -11,7 +11,7 @@ export const useServices = () => {
         setIsLoading(true);
         setError(null);
         try{
-            const response = await api.get('/services');
+            const response = await api.get('/service');
             setServices(response.data);
         } catch(err: any){
             setError(err.message || "Failed to fetch services.");
