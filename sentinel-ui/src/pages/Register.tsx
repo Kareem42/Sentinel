@@ -27,7 +27,7 @@ export const Register: React.FC = () => {
             });
 
             alert('Registration successful! Redirecting to login...');
-            navigate('/login');
+            navigate('/');
         } catch (err: any) {
             setError(err.response?.data?.message || 'Registration failed. Try a different username.');
         } finally {

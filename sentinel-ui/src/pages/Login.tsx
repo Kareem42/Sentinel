@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import api from '../api/axiosConfig.ts';
+import { useAuth } from '../context/AuthContext';
 
 export const Login: React.FC = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const { login } = useAuth();
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
@@ -17,13 +19,11 @@ export const Login: React.FC = () => {
 
         try {
             const response = await api.post("/auth/login", { username, password });
-
-            localStorage.setItem("sentinel_token", response.data.token);
+            const token = response.data.token;
+            login(token);
             navigate("/dashboard");
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Invalid username or password');
-        } finally {
-            setLoading(false);
+            alert("Invalid credentials");
         }
     }
 
