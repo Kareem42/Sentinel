@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from "axios";
+import api from '../api/axiosConfig';
 import toast from 'react-hot-toast';
 
 interface Props {
@@ -17,7 +17,7 @@ export const ServiceForm  = ({onServiceAdded}: Props) => {
         const loadingToast = toast.loading('Registering service...');
         try{
             // This hits the Dockerized Spring Boot API
-            await axios.post('http://localhost:8080/api/v1/service', formData);
+            await api.post('/service', formData);
             toast.success('Success! Service registered.', { id: loadingToast });
             setFormData({name: '', url: ''});
             onServiceAdded();

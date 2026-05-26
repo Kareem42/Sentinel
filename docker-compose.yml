@@ -1,31 +1,74 @@
 version: '3.8'
+
 services:
+  # --- DATABASE SERVICE ---
   sentinel-db:
     image: postgres:15
     container_name: sentinel-db
+    restart: unless-stopped
+    networks:
+      - sentinel-network
     environment:
       POSTGRES_DB: sentinel_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     ports:
-      - "5432:5432" # Keep 5433 for your local PGAdmin/DBeaver access
+      - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
+  # --- BACKEND API SERVICE ---
   sentinel-api:
-    build: .
+    build: . # Dockerfile is at the project root
     container_name: sentinel-api
+    restart: unless-stopped
+    networks:
+      - sentinel-network
     ports:
       - "8080:8080"
     depends_on:
       sentinel-db:
         condition: service_healthy
     environment:
-      # CRITICAL: Use the service name 'sentinel-db', not 'localhost'
       SPRING_DATASOURCE_URL: jdbc:postgresql://sentinel-db:5432/sentinel_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: password
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # --- FRONTEND UI SERVICE ---
+  frontend:
+    build:
+      context: ./sentinel-ui
+      dockerfile: Dockerfile.dev
+    container_name: sentinel-ui
+    restart: unless-stopped
+    networks:
+      - sentinel-network
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./sentinel-ui:/app
+      - /app/node_modules
+    environment:
+      VITE_API_URL: http://localhost:8080/api/v1
+    depends_on:
+      sentinel-api:
+        condition: service_healthy
+
+networks:
+  sentinel-network:
+    driver: bridge
+
+volumes:
+  pgdata:
