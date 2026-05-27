@@ -2,7 +2,6 @@ package com.backend.sentinel.exception;
 
 import com.backend.sentinel.dto.ApiError;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,5 +33,20 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ApiError> handleRuntimeException(
+            RuntimeException ex, HttpServletRequest request) {
+
+        ApiError apiError = new ApiError(
+                request.getRequestURI(),
+                ex.getMessage(),
+                HttpStatus.CONFLICT.value(),
+                LocalDateTime.now(),
+                Collections.emptyMap()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
     }
 }

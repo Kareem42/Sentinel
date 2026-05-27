@@ -19,7 +19,7 @@ public class DataInitializer {
     @PostConstruct
     public void init() {
         if (userRepository.findByUsername("chester").isEmpty()) {
-            RegisterRequest adminRequest = new RegisterRequest("chester", "password123", "admin@sentinel.com");
+            RegisterRequest adminRequest = new RegisterRequest("chester", "admin@sentinel.com", "password123");
             registrationService.saveRegisterService(adminRequest);
 
             System.out.println("Environment seeded via RegistrationService");

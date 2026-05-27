@@ -1,6 +1,9 @@
 spring:
   application:
     name: sentinel
+
+jwt:
+  secret: ${JWT_SECRET:YourLongSecureSecretKeyThatIsAtLeast32CharactersLongForHS256!!}
   datasource:
     url: jdbc:postgresql://localhost:5432/sentinel_db
     username: user

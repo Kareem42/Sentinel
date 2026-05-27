@@ -2,6 +2,7 @@ package com.backend.sentinel.controller;
 
 import com.backend.sentinel.dto.RegisterRequest;
 import com.backend.sentinel.service.RegistrationService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +19,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody RegisterRequest request){
+    public ResponseEntity<String> registerUser(@Valid @RequestBody RegisterRequest request){
         registrationService.saveRegisterService(request);
         return ResponseEntity.ok("User registered successfully");
     }
