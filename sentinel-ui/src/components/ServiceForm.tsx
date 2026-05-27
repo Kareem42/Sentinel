@@ -1,35 +1,36 @@
 import React, { useState } from 'react';
 import api from '../api/axiosConfig';
 import toast from 'react-hot-toast';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface Props {
     onServiceAdded: () => void;
 }
 
-export const ServiceForm  = ({onServiceAdded}: Props) => {
-    const [formData, setFormData] = useState({name: '', url: ''});
+export const ServiceForm = ({ onServiceAdded }: Props) => {
+    const [formData, setFormData] = useState({ name: '', url: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        const loadingToast = toast.loading('Registering service...');
-        try{
-            // This hits the Dockerized Spring Boot API
+        const loadingToast = toast.loading('Registering service…');
+        try {
             await api.post('/service', formData);
-            toast.success('Success! Service registered.', { id: loadingToast });
-            setFormData({name: '', url: ''});
+            toast.success('Service registered!', { id: loadingToast });
+            setFormData({ name: '', url: '' });
             onServiceAdded();
         } catch (error: any) {
             const apiError = error.response?.data;
-
+            toast.dismiss(loadingToast);
             if (apiError?.errors) {
-                Object.values(apiError.errors).forEach((error: any) => {
-                    toast.error(error.message);
-                })
+                Object.values(apiError.errors).forEach((e: any) => toast.error(e.message));
             } else {
-                toast.error("An unexpected error has occurred.");
+                toast.error("An unexpected error occurred.");
             }
         } finally {
             setIsSubmitting(false);
@@ -37,22 +38,37 @@ export const ServiceForm  = ({onServiceAdded}: Props) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}
-              style={{display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '300px'}}>
-            <input
-                required
-                placeholder="Service Name"
-                value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
-            />
-            <input
-                required
-                placeholder="Service Url"
-                value={formData.url}
-                onChange={(e) => setFormData({...formData, url: e.target.value})}
-            />
-            <button type="submit" disabled={isSubmitting}>Register Service</button>
-            {isSubmitting ? 'Saving...' : 'Register Service'}
-        </form>
-    )
-}
+        <Card>
+            <CardHeader>
+                <CardTitle>Register a Service</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 items-end">
+                    <div className="space-y-2 flex-1">
+                        <Label htmlFor="service-name">Service Name</Label>
+                        <Input
+                            id="service-name"
+                            placeholder="e.g. Payment API"
+                            required
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        />
+                    </div>
+                    <div className="space-y-2 flex-1">
+                        <Label htmlFor="service-url">Service URL</Label>
+                        <Input
+                            id="service-url"
+                            placeholder="https://api.example.com/health"
+                            required
+                            value={formData.url}
+                            onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                        />
+                    </div>
+                    <Button type="submit" disabled={isSubmitting} className="shrink-0">
+                        {isSubmitting ? 'Registering…' : 'Register Service'}
+                    </Button>
+                </form>
+            </CardContent>
+        </Card>
+    );
+};
