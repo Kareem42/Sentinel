@@ -1,4 +1,4 @@
-# Sentinel
+# Project Sentinel
 
 A service uptime monitoring application. Register your external services by URL and Sentinel will automatically ping them every 60 seconds and report their status (UP / DOWN).
 
