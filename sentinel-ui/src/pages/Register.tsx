@@ -15,6 +15,7 @@ import {
 
 export const Register: React.FC = () => {
     const [formData, setFormData] = useState({
+        email: "",
         username: "",
         password: "",
         confirmPassword: "",
@@ -33,6 +34,7 @@ export const Register: React.FC = () => {
 
         try {
             await api.post("/registration/register", {
+                email: formData.email,
                 username: formData.username,
                 password: formData.password,
             });
@@ -60,6 +62,17 @@ export const Register: React.FC = () => {
                     )}
 
                     <form onSubmit={handleSubmit} className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="username">Email</Label>
+                            <Input
+                                id="email"
+                                type="text"
+                                placeholder="Enter in a valid email address"
+                                required
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            />
+                        </div>
                         <div className="space-y-2">
                             <Label htmlFor="username">Username</Label>
                             <Input
