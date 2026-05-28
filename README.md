@@ -1,24 +1,24 @@
 # Project Sentinel
 
-A service uptime monitoring application. Register your external services by URL and Sentinel will automatically ping them every 60 seconds and report their status (UP / DOWN).
+A lightweight, self-hosted service uptime monitoring application. Register your external microservices or websites by URL, and Sentinel will automatically track their availability, pinging them on a background thread and reporting their real-time status.
 
 ## Tech Stack
 
 **Backend**
 - Java 17, Spring Boot 3.4.4
-- Spring Security + JWT (JJWT 0.11.5) — stateless auth
-- Spring Data JPA + PostgreSQL
-- SpringDoc OpenAPI (Swagger UI)
-- Lombok
+- Spring Security + JWT (JJWT 0.11.5) — stateless authentication & role-based access filtering
+- Spring Data JPA + PostgreSQL - Relational storage with robust data mapping
+- SpringDoc OpenAPI (Swagger UI) - Automated API documentation
+- Lombok - Boilerplate reduction
 
 **Frontend**
-- React 19, TypeScript, Vite
-- React Router v7
-- Axios
-- react-hot-toast
+- React 19, TypeScript, Vite - Modern, type-safe, ultra-fast UI rendering
+- React Router v7 - Declarative client-side routing
+- Axios - Centralized HTTP client with request/response interceptor for JWT injection
+- react-hot-toast - Responsive asynchronous UI notifications
 
 **Infrastructure**
-- Docker Compose (3 services: database, API, frontend)
+- Docker Compose - Multi-container orchestration managing 3 isolated services (Database, API, and Frontend UI) over a shared virtual network
 
 ## Features
 
