@@ -47,6 +47,17 @@ docker compose up --build
 | Swagger UI   | http://localhost:8080/swagger-ui/index.html |
 | PostgreSQL   | localhost:5432 (`sentinel_db`) |
 
+### Demo credentials
+
+The app seeds a ready-to-use account and three example monitored services on first boot — no manual setup required.
+
+| Field    | Value      |
+|----------|------------|
+| Username | `demo`     |
+| Password | `demo1234` |
+
+Pre-seeded services: **GitHub**, **Google**, and a public **JSON placeholder API**. You can add, remove, or replace them from the dashboard after logging in.
+
 To stop all services:
 
 ```bash
