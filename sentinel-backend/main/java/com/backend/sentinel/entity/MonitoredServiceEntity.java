@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "monitored_services")
 public class MonitoredServiceEntity {
-    @jakarta.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 

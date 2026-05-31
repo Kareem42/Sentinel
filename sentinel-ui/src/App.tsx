@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 function Dashboard() {
-    const { services, isLoading, refresh } = useServices();
+    const { services, isLoading, error, refresh } = useServices();
     const { logout, username } = useAuth();
 
 
@@ -31,7 +31,7 @@ function Dashboard() {
             {/* Main */}
             <main className="max-w-6xl mx-auto px-6 py-8 space-y-6">
                 <div>
-                    <h1 className="text-2xl font-bold bg-black tracking-tight">Welcome, {username}</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">Welcome, {username}</h1>
                     <p className="text-muted-foreground text-sm mt-1">
                         Register and monitor your service endpoints.
                     </p>
@@ -43,6 +43,8 @@ function Dashboard() {
 
                 {isLoading ? (
                     <p className="text-muted-foreground text-sm">Loading services…</p>
+                ) : error ? (
+                    <p className="text-sm text-destructive">Failed to load services: {error}</p>
                 ) : (
                     <ServiceList services={services} />
                 )}

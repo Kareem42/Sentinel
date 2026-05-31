@@ -2,6 +2,7 @@ package com.backend.sentinel.service;
 
 import com.backend.sentinel.dto.RegisterRequest;
 import com.backend.sentinel.entity.User;
+import com.backend.sentinel.exception.UsernameAlreadyExistsException;
 import com.backend.sentinel.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,9 +14,9 @@ public class RegistrationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void saveRegisterService(RegisterRequest request) throws RuntimeException {
+    public void saveRegisterService(RegisterRequest request) {
         if (userRepository.existsByUsername(request.username())) {
-            throw new RuntimeException("Username is already in use");
+            throw new UsernameAlreadyExistsException("Username is already in use");
         }
         User user = new User();
         user.setUsername(request.username());

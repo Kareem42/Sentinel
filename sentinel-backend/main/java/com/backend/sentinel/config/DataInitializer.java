@@ -6,9 +6,11 @@ import com.backend.sentinel.repository.MonitoredServiceRepository;
 import com.backend.sentinel.repository.UserRepository;
 import com.backend.sentinel.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
@@ -23,14 +25,14 @@ public class DataInitializer implements CommandLineRunner {
             registrationService.saveRegisterService(
                     new RegisterRequest("demo", "demo@sentinel.com", "demo1234")
             );
-            System.out.println("[DataInitializer] Demo user created — username: demo / password: demo1234");
+            log.info("[DataInitializer] Demo user created.");
         }
 
         if (monitoredServiceRepository.count() == 0) {
             monitoredServiceRepository.save(service("GitHub", "https://github.com"));
             monitoredServiceRepository.save(service("Google", "https://www.google.com"));
             monitoredServiceRepository.save(service("Example API", "https://jsonplaceholder.typicode.com/todos/1"));
-            System.out.println("[DataInitializer] Demo monitored services seeded.");
+            log.info("[DataInitializer] Demo monitored services seeded.");
         }
     }
 

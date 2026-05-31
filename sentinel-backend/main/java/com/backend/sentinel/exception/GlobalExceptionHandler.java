@@ -35,9 +35,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ApiError> handleRuntimeException(
-            RuntimeException ex, HttpServletRequest request) {
+    @ExceptionHandler(UsernameAlreadyExistsException.class)
+    public ResponseEntity<ApiError> handleUsernameAlreadyExists(
+            UsernameAlreadyExistsException ex, HttpServletRequest request) {
 
         ApiError apiError = new ApiError(
                 request.getRequestURI(),
@@ -48,5 +48,20 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiError> handleGenericException(
+            Exception ex, HttpServletRequest request) {
+
+        ApiError apiError = new ApiError(
+                request.getRequestURI(),
+                "An unexpected error occurred",
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                LocalDateTime.now(),
+                Collections.emptyMap()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

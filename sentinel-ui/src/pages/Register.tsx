@@ -63,7 +63,7 @@ export const Register: React.FC = () => {
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="username">Email</Label>
+                            <Label htmlFor="email">Email</Label>
                             <Input
                                 id="email"
                                 type="text"

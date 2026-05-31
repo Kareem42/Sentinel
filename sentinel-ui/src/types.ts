@@ -1,11 +1,11 @@
 export type MonitoredService = {
-    id: number;
+    id: string;
     name: string;
     url: string;
 }
 
 export interface MonitoredServiceResponse {
-    id: number;
+    id: string;
     name: string;
     url: string;
     status: string;

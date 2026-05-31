@@ -28,7 +28,7 @@ export const ServiceForm = ({ onServiceAdded }: Props) => {
             const apiError = error.response?.data;
             toast.dismiss(loadingToast);
             if (apiError?.errors) {
-                Object.values(apiError.errors).forEach((e: any) => toast.error(e.message));
+                Object.values(apiError.errors).forEach((e: any) => toast.error(String(e)));
             } else {
                 toast.error("An unexpected error occurred.");
             }
