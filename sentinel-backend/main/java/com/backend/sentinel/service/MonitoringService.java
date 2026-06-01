@@ -3,71 +3,81 @@ package com.backend.sentinel.service;
 import com.backend.sentinel.entity.MonitoredServiceEntity;
 import com.backend.sentinel.repository.MonitoredServiceRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
-@Service
+/**
+ * Scheduler that fires a base tick every 30 seconds and dispatches
+ * parallel health checks for any service whose check interval has elapsed.
+ *
+ * HTTP work is delegated to MonitoringCheckExecutor so each service check
+ * runs in its own transaction on the monitoringExecutor thread pool —
+ * preventing one slow/hung endpoint from blocking all others.
+ */
 @Slf4j
+@Service
 public class MonitoringService {
 
     private final MonitoredServiceRepository repository;
-    private final HttpClient httpClient = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofSeconds(5))
-            .build();
+    private final MonitoringCheckExecutor checkExecutor;
+    private final Executor monitoringExecutor;
 
-    public MonitoringService(MonitoredServiceRepository repository) {
+    // Constructor written manually so @Qualifier is applied to the parameter,
+    // which is required for Spring to resolve the correct Executor bean.
+    // Lombok's @RequiredArgsConstructor generates the constructor without
+    // preserving field-level @Qualifier, so Spring ignores it.
+    public MonitoringService(
+            MonitoredServiceRepository repository,
+            MonitoringCheckExecutor checkExecutor,
+            @Qualifier("monitoringExecutor") Executor monitoringExecutor) {
         this.repository = repository;
+        this.checkExecutor = checkExecutor;
+        this.monitoringExecutor = monitoringExecutor;
     }
 
-    @Scheduled(fixedRate = 60000)
-    @Transactional
+    /**
+     * Ticks every 30 s (the minimum supported check interval).
+     * For each service, checks whether its individual checkIntervalSeconds
+     * has elapsed before dispatching a ping.
+     */
+    @Scheduled(fixedRate = 30_000)
     public void checkAllServices() {
-        log.info("Starting health check for all services...");
         List<MonitoredServiceEntity> services = repository.findAll();
 
-        for (MonitoredServiceEntity service : services) {
-            checkAllStatus(service);
+        List<UUID> due = services.stream()
+                .filter(this::isDue)
+                .map(MonitoredServiceEntity::getId)
+                .toList();
+
+        if (due.isEmpty()) {
+            log.debug("Monitoring tick: no services due for a check.");
+            return;
         }
+
+        log.info("Monitoring tick: dispatching checks for {} / {} service(s).", due.size(), services.size());
+
+        List<CompletableFuture<Void>> futures = due.stream()
+                .map(id -> CompletableFuture.runAsync(() -> checkExecutor.performCheck(id), monitoringExecutor)
+                        .exceptionally(ex -> {
+                            log.error("Unexpected error during check for service {}: {}", id, ex.getMessage());
+                            return null;
+                        }))
+                .toList();
+
+        // Wait for all checks in this tick to complete before the next tick fires
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
     }
 
-    private void checkAllStatus(MonitoredServiceEntity service) {
-        try{
-            String finalUrl = normalizeUrl(service.getUrl());
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(finalUrl))
-                    .method("HEAD", HttpRequest.BodyPublishers.noBody())
-                    .build();
-
-            HttpResponse<Void> response = httpClient.send(request, HttpResponse.BodyHandlers.discarding());
-
-            if(response.statusCode() >= 200 && response.statusCode() < 400) {
-                service.setStatus("UP");
-            } else {
-                service.setStatus("DOWN");
-            }
-        } catch(Exception e) {
-            log.error("Failed to reach service {}: {}", service.getUrl(), e.getMessage());
-            service.setStatus("DOWN");
-        }
-
-        service.setLastChecked(LocalDateTime.now());
-        repository.save(service);
-    }
-
-    private String normalizeUrl(String url) {
-        if (!url.startsWith("http://") && !url.startsWith("https://")) {
-            return "http://" + url;
-        }
-        return url;
+    private boolean isDue(MonitoredServiceEntity service) {
+        if (service.getLastChecked() == null) return true;
+        LocalDateTime nextDue = service.getLastChecked().plusSeconds(service.getCheckIntervalSeconds());
+        return !LocalDateTime.now().isBefore(nextDue);
     }
 }

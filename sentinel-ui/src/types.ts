@@ -9,6 +9,17 @@ export interface MonitoredServiceResponse {
     name: string;
     url: string;
     status: string;
+    lastChecked: string | null;
+    lastResponseTimeMs: number | null;
+    checkIntervalSeconds: number;
+}
+
+export interface PageResponse<T> {
+    content: T[];
+    totalElements: number;
+    totalPages: number;
+    number: number;
+    size: number;
 }
 
 export interface LoginRequest {

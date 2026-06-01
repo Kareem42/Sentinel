@@ -23,9 +23,13 @@ A lightweight, self-hosted service uptime monitoring application. Register your 
 ## Features
 
 - User registration and JWT-based login
-- Add services to monitor by URL and name
-- Automated health checks every 60 seconds via HTTP HEAD requests
-- Per-service status (UP / DOWN) with last-checked timestamp
+- Add, view, and **remove** services to monitor by URL and name
+- Automated parallel health checks via HTTP HEAD requests — each service runs on an isolated thread so one slow endpoint never blocks others
+- Per-service configurable check intervals (30 s – 24 h, default 60 s)
+- Per-service status (UP / DOWN / PENDING) with last-checked timestamp and response time
+- Full check history stored in `service_check_logs` for uptime tracking and future analytics
+- Paginated service list (`?page=N&size=N&sort=field,dir`)
+- Multi-tenant: every user sees and manages only their own services
 - Dashboard to view all monitored services and add new ones
 
 ## Running with Docker
@@ -72,14 +76,38 @@ docker compose down -v
 
 ## API Endpoints
 
-| Method | Path                                | Auth Required | Description              |
-|--------|-------------------------------------|---------------|--------------------------|
-| POST   | `/api/v1/registration/register`     | No            | Register a new user      |
-| POST   | `/api/v1/auth/login`                | No            | Login, returns JWT token |
-| POST   | `/api/v1/service`                   | Yes           | Add a service to monitor |
-| GET    | `/api/v1/service`                   | Yes           | List all monitored services |
+| Method | Path                                | Auth Required | Description                                        |
+|--------|-------------------------------------|---------------|----------------------------------------------------|
+| POST   | `/api/v1/registration/register`     | No            | Register a new user                                |
+| POST   | `/api/v1/auth/login`                | No            | Login, returns JWT token                           |
+| POST   | `/api/v1/service`                   | Yes           | Add a service to monitor                           |
+| GET    | `/api/v1/service`                   | Yes           | List monitored services (paginated, owner-scoped)  |
+| DELETE | `/api/v1/service/{id}`              | Yes           | Remove a monitored service                         |
 
 Authenticated requests require an `Authorization: Bearer <token>` header.
+
+### Pagination
+
+`GET /api/v1/service` supports Spring's standard query parameters:
+
+```
+?page=0&size=20&sort=createdAt,desc
+?sort=name,asc
+```
+
+The response is a Spring `Page` object with `content`, `totalElements`, `totalPages`, `number`, and `size` fields.
+
+### Register request body
+
+```json
+{
+  "name": "Payment API",
+  "url": "https://api.example.com/health",
+  "checkIntervalSeconds": 120
+}
+```
+
+`checkIntervalSeconds` is optional (30–86400, defaults to 60).
 
 ## Environment Variables
 
@@ -103,10 +131,10 @@ Sentinel/
 │       ├── config/            # Security, CORS, data initialization
 │       ├── controller/        # Auth, Registration, MonitoredService endpoints
 │       ├── dto/               # Request/response objects
-│       ├── entity/            # JPA entities (User, MonitoredServiceEntity)
+│       ├── entity/            # JPA entities (User, MonitoredServiceEntity, ServiceCheckLog)
 │       ├── repository/        # Spring Data JPA repositories
 │       ├── security/          # JWT filter and service
-│       └── service/           # Business logic + scheduled monitoring
+│       └── service/           # Business logic, scheduled monitoring, check executor
 ├── sentinel-ui/               # React frontend
 │   └── src/
 │       ├── context/           # AuthContext (JWT token management)

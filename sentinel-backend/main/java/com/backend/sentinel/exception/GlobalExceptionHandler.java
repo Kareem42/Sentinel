@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -48,6 +49,22 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ApiError> handleResponseStatusException(
+            ResponseStatusException ex, HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
+        ApiError apiError = new ApiError(
+                request.getRequestURI(),
+                ex.getReason() != null ? ex.getReason() : status.getReasonPhrase(),
+                status.value(),
+                LocalDateTime.now(),
+                Collections.emptyMap()
+        );
+
+        return new ResponseEntity<>(apiError, status);
     }
 
     @ExceptionHandler(Exception.class)

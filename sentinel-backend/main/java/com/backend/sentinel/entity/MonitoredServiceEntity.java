@@ -23,8 +23,20 @@ public class MonitoredServiceEntity {
     @Column(nullable = false)
     private String url;
 
-    private String status = "UNKNOWN"; // "UP" , "DOWN"
+    private String status = "UNKNOWN"; // "UP", "DOWN", "PENDING"
     private LocalDateTime lastChecked;
+
+    /** Milliseconds taken on the most recent health check. Null until first check. */
+    private Long lastResponseTimeMs;
+
+    /** How often (in seconds) this service should be pinged. Defaults to 60s. */
+    @Column(nullable = false)
+    private int checkIntervalSeconds = 60;
+
+    /** The user who registered this service. */
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 function Dashboard() {
-    const { services, isLoading, error, refresh } = useServices();
+    const { services, totalElements, isLoading, error, refresh, deleteService } = useServices();
     const { logout, username } = useAuth();
 
 
@@ -46,7 +46,7 @@ function Dashboard() {
                 ) : error ? (
                     <p className="text-sm text-destructive">Failed to load services: {error}</p>
                 ) : (
-                    <ServiceList services={services} />
+                    <ServiceList services={services} totalElements={totalElements} onDelete={deleteService} />
                 )}
             </main>
         </div>
