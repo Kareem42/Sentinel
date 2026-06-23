@@ -16,7 +16,6 @@ import java.util.concurrent.Executor;
 /**
  * Scheduler that fires a base tick every 30 seconds and dispatches
  * parallel health checks for any service whose check interval has elapsed.
- *
  * HTTP work is delegated to MonitoringCheckExecutor so each service check
  * runs in its own transaction on the monitoringExecutor thread pool —
  * preventing one slow/hung endpoint from blocking all others.
@@ -29,10 +28,6 @@ public class MonitoringService {
     private final MonitoringCheckExecutor checkExecutor;
     private final Executor monitoringExecutor;
 
-    // Constructor written manually so @Qualifier is applied to the parameter,
-    // which is required for Spring to resolve the correct Executor bean.
-    // Lombok's @RequiredArgsConstructor generates the constructor without
-    // preserving field-level @Qualifier, so Spring ignores it.
     public MonitoringService(
             MonitoredServiceRepository repository,
             MonitoringCheckExecutor checkExecutor,
