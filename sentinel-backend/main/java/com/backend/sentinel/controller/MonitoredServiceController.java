@@ -30,11 +30,6 @@ public class MonitoredServiceController {
         return ResponseEntity.status(HttpStatus.CREATED).body(data);
     }
 
-    /**
-     * Returns a paginated list of the authenticated user's monitored services.
-     * Defaults: page=0, size=20, sorted by createdAt descending.
-     * Supports ?page=N&size=N&sort=name,asc via Spring's Pageable resolution.
-     */
     @GetMapping
     public ResponseEntity<Page<ServiceResponse>> getAllServices(
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC)
