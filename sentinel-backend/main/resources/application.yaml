@@ -9,20 +9,27 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+    show-sql: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 jwt:
   secret: ${JWT_SECRET}
 
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
 
-# Optional: Change the logging level to see more detail if things fail
 logging:
   level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-
+    root: INFO
+    com.backend.sentinel: INFO
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
