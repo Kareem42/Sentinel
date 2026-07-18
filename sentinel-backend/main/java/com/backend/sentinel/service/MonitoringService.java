@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -72,7 +72,7 @@ public class MonitoringService {
 
     private boolean isDue(MonitoredServiceEntity service) {
         if (service.getLastChecked() == null) return true;
-        LocalDateTime nextDue = service.getLastChecked().plusSeconds(service.getCheckIntervalSeconds());
-        return !LocalDateTime.now().isBefore(nextDue);
+        Instant nextDue = service.getLastChecked().plusSeconds(service.getCheckIntervalSeconds());
+        return !Instant.now().isBefore(nextDue);
     }
 }

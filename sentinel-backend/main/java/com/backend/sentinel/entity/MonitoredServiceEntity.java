@@ -3,6 +3,7 @@ package com.backend.sentinel.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ public class MonitoredServiceEntity {
     private String url;
 
     private String status = "UNKNOWN"; // "UP", "DOWN", "PENDING"
-    private LocalDateTime lastChecked;
+    private Instant lastChecked;
 
     /** Milliseconds taken on the most recent health check. Null until first check. */
     private Long lastResponseTimeMs;

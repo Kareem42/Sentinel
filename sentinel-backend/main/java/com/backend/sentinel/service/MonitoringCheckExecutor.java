@@ -14,7 +14,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 /**
@@ -65,7 +65,7 @@ public class MonitoringCheckExecutor {
 
         // Update denormalized fields on the service for fast list queries
         service.setStatus(status);
-        service.setLastChecked(LocalDateTime.now());
+        service.setLastChecked(Instant.now());
         service.setLastResponseTimeMs(responseTimeMs);
         serviceRepository.save(service);
 

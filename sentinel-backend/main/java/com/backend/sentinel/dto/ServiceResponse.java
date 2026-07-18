@@ -1,6 +1,6 @@
 package com.backend.sentinel.dto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 public record ServiceResponse(
@@ -8,7 +8,7 @@ public record ServiceResponse(
         String name,
         String url,
         String status,
-        LocalDateTime lastChecked,
+        Instant lastChecked,
         Long lastResponseTimeMs,
         int checkIntervalSeconds
 ) {}

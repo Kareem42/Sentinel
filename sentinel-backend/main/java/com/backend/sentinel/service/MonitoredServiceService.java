@@ -5,6 +5,7 @@ import com.backend.sentinel.dto.ServiceResponse;
 import com.backend.sentinel.entity.MonitoredServiceEntity;
 import com.backend.sentinel.entity.User;
 import com.backend.sentinel.repository.MonitoredServiceRepository;
+import com.backend.sentinel.repository.ServiceCheckLogRepository;
 import com.backend.sentinel.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,7 @@ public class MonitoredServiceService {
 
     private final MonitoredServiceRepository repository;
     private final UserRepository userRepository;
+    private final ServiceCheckLogRepository checkLogRepository;
 
     @Transactional
     public ServiceResponse saveService(ServiceRequest request) {
@@ -51,6 +53,7 @@ public class MonitoredServiceService {
         MonitoredServiceEntity entity = repository.findByIdAndOwner(id, owner)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Service not found or does not belong to you"));
+        checkLogRepository.deleteAllByService(entity);
         repository.delete(entity);
     }
 

@@ -5,6 +5,7 @@ import com.backend.sentinel.dto.ServiceResponse;
 import com.backend.sentinel.entity.MonitoredServiceEntity;
 import com.backend.sentinel.entity.User;
 import com.backend.sentinel.repository.MonitoredServiceRepository;
+import com.backend.sentinel.repository.ServiceCheckLogRepository;
 import com.backend.sentinel.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -22,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +43,9 @@ class MonitoredServiceServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private ServiceCheckLogRepository checkLogRepository;
 
     @InjectMocks
     private MonitoredServiceService monitoredServiceService;
@@ -198,6 +204,36 @@ class MonitoredServiceServiceTest {
         monitoredServiceService.findAll(DEFAULT_PAGE);
 
         verify(repository).findByOwner(eq(mockUser), any(Pageable.class));
+    }
+
+    // ── deleteService ────────────────────────────────────────────────────────
+
+    @Test
+    @DisplayName("deleteService removes check logs before deleting the service to satisfy the FK constraint")
+    void deleteService_removesCheckLogsBeforeEntity() {
+        UUID id = UUID.randomUUID();
+        MonitoredServiceEntity entity = entityWith(id, "X", "https://x.com", "UP");
+        when(repository.findByIdAndOwner(id, mockUser)).thenReturn(Optional.of(entity));
+
+        monitoredServiceService.deleteService(id);
+
+        InOrder inOrder = inOrder(checkLogRepository, repository);
+        inOrder.verify(checkLogRepository).deleteAllByService(entity);
+        inOrder.verify(repository).delete(entity);
+    }
+
+    @Test
+    @DisplayName("deleteService throws 404 when the service does not exist or belongs to another user")
+    void deleteService_notFound_throws404() {
+        UUID id = UUID.randomUUID();
+        when(repository.findByIdAndOwner(id, mockUser)).thenReturn(Optional.empty());
+
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
+                () -> monitoredServiceService.deleteService(id));
+
+        assertEquals(404, ex.getStatusCode().value());
+        verifyNoInteractions(checkLogRepository);
+        verify(repository, never()).delete(any());
     }
 
     // ── helpers ──────────────────────────────────────────────────────────────

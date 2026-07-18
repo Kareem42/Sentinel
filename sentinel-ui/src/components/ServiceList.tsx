@@ -20,7 +20,10 @@ interface Props {
 
 function formatLastChecked(iso: string | null): string {
     if (!iso) return "Never";
-    return new Date(iso).toLocaleTimeString([], {
+    return new Date(iso).toLocaleString([], {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",

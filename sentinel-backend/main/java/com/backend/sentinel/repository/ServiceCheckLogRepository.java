@@ -11,4 +11,7 @@ public interface ServiceCheckLogRepository extends JpaRepository<ServiceCheckLog
 
     /** Returns the five most recent check results for a given service, newest first. */
     List<ServiceCheckLog> findTop5ByServiceOrderByCheckedAtDesc(MonitoredServiceEntity service);
+
+    /** Deletes all check log rows for a service so it can be removed without violating the FK constraint. */
+    void deleteAllByService(MonitoredServiceEntity service);
 }
