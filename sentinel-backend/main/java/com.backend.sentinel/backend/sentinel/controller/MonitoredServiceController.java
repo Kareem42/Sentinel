@@ -1,0 +1,45 @@
+package backend.sentinel.controller;
+
+import backend.sentinel.dto.ServiceRequest;
+import backend.sentinel.dto.ServiceResponse;
+import backend.sentinel.service.MonitoredServiceService;
+import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/api/v1/service")
+public class MonitoredServiceController {
+
+    private final MonitoredServiceService monitoredService;
+
+    public MonitoredServiceController(MonitoredServiceService monitoredService) {
+        this.monitoredService = monitoredService;
+    }
+
+    @PostMapping
+    public ResponseEntity<ServiceResponse> createService(@Valid @RequestBody ServiceRequest request) {
+        ServiceResponse data = monitoredService.saveService(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(data);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<ServiceResponse>> getAllServices(
+            @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC)
+            Pageable pageable) {
+        return ResponseEntity.ok(monitoredService.findAll(pageable));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteService(@PathVariable UUID id) {
+        monitoredService.deleteService(id);
+        return ResponseEntity.noContent().build();
+    }
+}

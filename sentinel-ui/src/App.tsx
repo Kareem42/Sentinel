@@ -2,10 +2,11 @@ import { ServiceForm } from "./components/ServiceForm.tsx";
 import { ServiceList } from "./components/ServiceList.tsx";
 import { useServices } from "./hooks/useServices.ts";
 import { Toaster } from 'react-hot-toast';
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-router-dom";
 import { Login } from "./pages/Login";
 import { AuthProvider, useAuth } from "./context/AuthContext.tsx";
 import { Register } from "./pages/Register.tsx";
+import { Integrations } from "./pages/Integrations.tsx";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
@@ -22,9 +23,14 @@ function Dashboard() {
                     <span className="font-semibold text-lg tracking-tight">
                         ⬡ Sentinel
                     </span>
-                    <Button variant="ghost" size="sm" onClick={logout}>
-                        Sign out
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        <Button variant="ghost" size="sm" render={<Link to="/integrations" />}>
+                            Integrations
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={logout}>
+                            Sign out
+                        </Button>
+                    </div>
                 </div>
             </header>
 
@@ -63,6 +69,10 @@ function AppRoutes() {
             <Route
                 path="/dashboard"
                 element={isAuthenticated ? <Dashboard /> : <Navigate to="/" replace />}
+            />
+            <Route
+                path="/integrations"
+                element={isAuthenticated ? <Integrations /> : <Navigate to="/" replace />}
             />
         </Routes>
     );

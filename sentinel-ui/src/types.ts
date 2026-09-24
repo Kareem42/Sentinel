@@ -14,6 +14,16 @@ export interface MonitoredServiceResponse {
     checkIntervalSeconds: number;
 }
 
+export interface IntegrationResponse {
+    id: string;
+    name: string;
+    purposeDescription: string;
+    appUrl: string;
+    apiDescription: string;
+    apiWebsiteUrl: string;
+    createdAt: string;
+}
+
 export interface PageResponse<T> {
     content: T[];
     totalElements: number;
