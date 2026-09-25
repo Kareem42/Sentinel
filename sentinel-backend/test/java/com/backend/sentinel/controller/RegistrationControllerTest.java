@@ -1,8 +1,8 @@
-package com.backend.sentinel.controller;
+package backend.sentinel.controller;
 
-import com.backend.sentinel.dto.RegisterRequest;
-import com.backend.sentinel.exception.UsernameAlreadyExistsException;
-import com.backend.sentinel.service.RegistrationService;
+import backend.sentinel.dto.RegisterRequest;
+import backend.sentinel.exception.UsernameAlreadyExistsException;
+import backend.sentinel.service.RegistrationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

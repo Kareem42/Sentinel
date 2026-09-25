@@ -1,8 +1,8 @@
-package com.backend.sentinel.controller;
+package backend.sentinel.controller;
 
-import com.backend.sentinel.dto.AuthResponse;
-import com.backend.sentinel.dto.LoginRequest;
-import com.backend.sentinel.security.JwtService;
+import backend.sentinel.dto.AuthResponse;
+import backend.sentinel.dto.LoginRequest;
+import backend.sentinel.security.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

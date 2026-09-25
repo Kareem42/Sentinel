@@ -1,7 +1,7 @@
-package com.backend.sentinel.controller;
+package backend.sentinel.controller;
 
-import com.backend.sentinel.dto.ServiceResponse;
-import com.backend.sentinel.service.MonitoredServiceService;
+import backend.sentinel.dto.ServiceResponse;
+import backend.sentinel.service.MonitoredServiceService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
