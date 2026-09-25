@@ -1,4 +1,4 @@
-package com.backend.sentinel;
+package backend.sentinel;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

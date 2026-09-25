@@ -1,12 +1,12 @@
-package com.backend.sentinel.service;
+package backend.sentinel.service;
 
-import com.backend.sentinel.dto.ServiceRequest;
-import com.backend.sentinel.dto.ServiceResponse;
-import com.backend.sentinel.entity.MonitoredServiceEntity;
-import com.backend.sentinel.entity.User;
-import com.backend.sentinel.repository.MonitoredServiceRepository;
-import com.backend.sentinel.repository.ServiceCheckLogRepository;
-import com.backend.sentinel.repository.UserRepository;
+import backend.sentinel.dto.ServiceRequest;
+import backend.sentinel.dto.ServiceResponse;
+import backend.sentinel.entity.MonitoredServiceEntity;
+import backend.sentinel.entity.User;
+import backend.sentinel.repository.MonitoredServiceRepository;
+import backend.sentinel.repository.ServiceCheckLogRepository;
+import backend.sentinel.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
