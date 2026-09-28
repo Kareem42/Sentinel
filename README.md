@@ -119,8 +119,19 @@ The backend reads the following environment variables (with fallback defaults fo
 | `SPRING_DATASOURCE_URL`     | `jdbc:postgresql://localhost:5432/sentinel_db` | Database URL |
 | `SPRING_DATASOURCE_USERNAME`| `user`                         | DB username              |
 | `SPRING_DATASOURCE_PASSWORD`| `password`                     | DB password              |
+| `PORT`                      | `8080`                          | HTTP port; Render supplies this automatically |
 
 > **Note:** The default `JWT_SECRET` is public and for local development only. Set a private secret of at least 32 bytes via environment variable before deploying. For example, generate one with `openssl rand -base64 32`.
+
+### Deploying the backend on Render
+
+Create a Render PostgreSQL database and link it to the backend web service. In the web service's environment settings, set `SPRING_DATASOURCE_URL` to a JDBC URL built from the database's **internal** connection details:
+
+```text
+jdbc:postgresql://<internal-host>:5432/<database-name>
+```
+
+Also set `SPRING_DATASOURCE_USERNAME` and `SPRING_DATASOURCE_PASSWORD` to the database credentials. Do not use `localhost` in the deployed URL; it refers to the web-service container, not the PostgreSQL service. The app binds to Render's automatically provided `PORT` (and uses `8080` locally).
 
 ## Project Structure
 
