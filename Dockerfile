@@ -2,7 +2,7 @@
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 COPY pom.xml .
-COPY sentinel-backend ./src
+COPY sentinel-backend ./sentinel-backend
 RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jre
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
