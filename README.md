@@ -115,12 +115,12 @@ The backend reads the following environment variables (with fallback defaults fo
 
 | Variable                    | Default                        | Description              |
 |-----------------------------|--------------------------------|--------------------------|
-| `JWT_SECRET`                | Insecure dev default (change in prod) | HS256 signing key |
+| `JWT_SECRET`                | `sentinel-local-development-only-jwt-secret-change-in-production` | HS256 signing key; set a private secret in production |
 | `SPRING_DATASOURCE_URL`     | `jdbc:postgresql://localhost:5432/sentinel_db` | Database URL |
 | `SPRING_DATASOURCE_USERNAME`| `user`                         | DB username              |
 | `SPRING_DATASOURCE_PASSWORD`| `password`                     | DB password              |
 
-> **Note:** The default `JWT_SECRET` in `application.yaml` is for development only. Set a strong secret via environment variable before deploying.
+> **Note:** The default `JWT_SECRET` is public and for local development only. Set a private secret of at least 32 bytes via environment variable before deploying. For example, generate one with `openssl rand -base64 32`.
 
 ## Project Structure
 

@@ -28,7 +28,8 @@
     </scm>
     <properties>
         <java.version>17</java.version>
-        <start-class>com.backend.sentinel.SentinelApplication</start-class>
+        <start-class>backend.sentinel.SentinelApplication</start-class>
+        <lombok.version>1.18.42</lombok.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -110,6 +111,13 @@
     </dependencies>
 
     <build>
+        <sourceDirectory>${project.basedir}/sentinel-backend/main/java</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/sentinel-backend/test/java</testSourceDirectory>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/sentinel-backend/main/resources</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
